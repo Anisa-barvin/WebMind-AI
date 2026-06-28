@@ -204,13 +204,13 @@ Organizations also face challenges in providing instant, accurate, and scalable 
 
 Current solutions require users to manually identify:
 
-• Relevant web pages
-• Product documentation
-• Frequently asked questions
-• Support articles
-• Technical documentation
-• Policies and procedures
-• Knowledge base content
+- Relevant web pages
+- Product documentation
+- Frequently asked questions
+- Support articles
+- Technical documentation
+- Policies and procedures
+- Knowledge base content
 
 This process is repetitive, time-consuming, inefficient, and often leads to user frustration.
 
@@ -237,23 +237,45 @@ The platform provides the following capabilities:
 # ✨ Features
 
 ✅ Website Crawling
+
 ✅ Automatic Content Extraction
+
 ✅ AI Generated Embeddings
+
 ✅ Vector Database Storage
+
 ✅ Semantic Search
-✅ Gork Integration
+
+✅ Google Gemini Integration
+
 ✅ AI Chat Assistant
+
 ✅ Documentation Generator
+
 ✅ Website Analytics
+
 ✅ Authentication
+
 ✅ User Dashboard
+
 ✅ Training Progress
+
+✅ Dark Mode
+
+✅ Light Mode
+
 ✅ Responsive UI
+
 ✅ MongoDB Atlas
+
 ✅ JWT Authentication
+
 ✅ Chat History
+
 ✅ Executive Summary
+
 ✅ Training Report
+
 ✅ Multi-page Website Support
 
 
