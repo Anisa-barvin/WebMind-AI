@@ -196,81 +196,64 @@ The system automatically:
 
 # 🎯 Problem Statement
 
-Modern websites contain thousands of pages.
+Businesses, educational institutions, and organizations often have large websites containing hundreds of pages of information. Users spend significant time manually searching through documentation, FAQs, blogs, and support pages to find the answers they need.
 
-Users often spend significant time searching for information.
+Traditional keyword-based search systems frequently fail to understand user intent, resulting in irrelevant search results and poor user experience.
 
-Traditional keyword search cannot understand context.
+Organizations also face challenges in providing instant, accurate, and scalable customer support without increasing operational costs.
 
-Businesses also struggle to provide instant customer support.
+Current solutions require users to manually identify:
 
-A semantic AI chatbot is needed to understand website content and answer questions accurately.
+• Relevant web pages
+• Product documentation
+• Frequently asked questions
+• Support articles
+• Technical documentation
+• Policies and procedures
+• Knowledge base content
 
+This process is repetitive, time-consuming, inefficient, and often leads to user frustration.
 
 
 # 💡 Solution
 
-WebMind AI uses Retrieval-Augmented Generation (RAG).
+WebMind AI is an AI-powered platform that transforms any public website into an intelligent chatbot using **Retrieval-Augmented Generation (RAG)**. Instead of relying on traditional keyword-based search, the platform crawls website content, processes and indexes it into a vector database, and enables users to interact with the website through natural language conversations. By combining semantic search with Google Gemini, WebMind AI delivers fast, accurate, and context-aware responses based solely on the website's content, providing a smarter and more efficient way to access information.
 
-The platform:
+The platform provides the following capabilities:
 
-✔ Crawls websites
-
-✔ Cleans HTML
-
-✔ Creates embeddings
-
-✔ Stores vectors inside ChromaDB
-
-✔ Retrieves relevant chunks
-
-✔ Uses Google Gemini to generate grounded answers
-
-✔ Provides AI chat with citations
+- 🌐 Crawls and extracts content from public websites.
+- 🧹 Cleans and preprocesses HTML to obtain meaningful text.
+- ✂️ Splits content into optimized text chunks for efficient retrieval.
+- 🧠 Generates high-quality vector embeddings using Gork.
+- 🗄️ Stores embeddings in a ChromaDB vector database.
+- 🔍 Performs semantic similarity search to retrieve the most relevant content.
+- 🤖 Generates context-aware answers using Google Gemini and RAG.
+- 💬 Provides an AI chatbot for interactive conversations with website content.
+- 📄 Generates executive summaries and AI-powered documentation.
+- 📊 Displays website analytics, training statistics, and chatbot usage insights.
+- 🔐 Supports secure user authentication and personalized dashboards.
 
 
 # ✨ Features
 
 ✅ Website Crawling
-
 ✅ Automatic Content Extraction
-
 ✅ AI Generated Embeddings
-
 ✅ Vector Database Storage
-
 ✅ Semantic Search
-
-✅ Google Gemini Integration
-
+✅ Gork Integration
 ✅ AI Chat Assistant
-
 ✅ Documentation Generator
-
 ✅ Website Analytics
-
 ✅ Authentication
-
 ✅ User Dashboard
-
 ✅ Training Progress
-
-✅ Dark Mode
-
-✅ Light Mode
-
 ✅ Responsive UI
-
 ✅ MongoDB Atlas
-
 ✅ JWT Authentication
-
 ✅ Chat History
-
 ✅ Executive Summary
-
 ✅ Training Report
-
 ✅ Multi-page Website Support
 
 
@@ -279,54 +262,131 @@ The platform:
 
 ## Landing Page
 
-![Landing](screenshots/landing.png)
+<img src="screenshots/landing-page.png" width="100%">
 
 ---
 
 ## Dashboard
 
-![Dashboard](screenshots/dashboard.png)
+<img src="screenshots/dashboard.png" width="100%">
 
 ---
 
 ## Train Website
 
-![Train](screenshots/train.png)
+<img src="screenshots/train.png" width="100%">
 
 ---
 
 ## Manage Sites
 
-![Manage](screenshots/manage.png)
+<img src="screenshots/manage.png" width="100%">
+
+---
+
+## Usecase
+
+<img src="screenshots/usecase.png" width="100%">
 
 ---
 
 ## AI Chat
 
-![Chat](screenshots/chat.png)
+<img src="screenshots/chat.png" width="100%">
 
 ---
 
 ## Documentation
 
-![Docs](screenshots/documentation.png)
+<img src="screenshots/documentation.png" width="100%">
 
 ---
 
 ## Analytics
 
-![Analytics](screenshots/analytics.png)
+<img src="screenshots/analytics.png" width="100%">
 
 ---
 
 ## Profile
 
-![Profile](screenshots/profile.png)
+<img src="screenshots/profile.png" width="100%">
 
 
 # 🏗 System Architecture
 
-![Architecture](screenshots/architecture.png)
+<img src="screenshots/architecture.png" width="100%">
+
+## Architecture Overview
+
+The system follows a modern client-server architecture powered by **Retrieval-Augmented Generation (RAG)** to transform any public website into an intelligent AI chatbot. It combines website crawling, semantic search, vector embeddings, and the **Groq LLM** to provide fast, accurate, and context-aware responses.
+
+### 1. React Frontend
+
+- Built using **React.js**, **Vite**, and **Tailwind CSS**.
+- Provides an intuitive interface for training websites and chatting with AI.
+- Displays dashboard statistics, analytics, documentation, and user profile.
+- Handles routing, authentication, and API communication.
+
+### 2. Node.js & Express Backend
+
+- Receives website URLs submitted by users.
+- Manages authentication and REST API endpoints.
+- Coordinates the complete RAG training pipeline.
+- Connects the frontend with MongoDB, ChromaDB, and the Groq API.
+
+### 3. Website Crawler (Cheerio)
+
+- Crawls the submitted website recursively.
+- Extracts meaningful text from HTML pages.
+- Removes scripts, styles, navigation menus, and unnecessary content.
+- Collects clean website data for AI processing.
+
+### 4. Text Processing & Chunking
+
+- Cleans extracted website content.
+- Splits large documents into smaller chunks.
+- Optimizes chunks for embedding generation and semantic retrieval.
+
+### 5. Embedding Generation
+
+- Converts text chunks into vector embeddings.
+- Preserves the semantic meaning of the content.
+- Prepares the data for efficient similarity search.
+
+### 6. ChromaDB Vector Database
+
+- Stores all generated vector embeddings.
+- Performs semantic similarity search.
+- Retrieves the most relevant content for user questions.
+- Acts as the knowledge base for the RAG pipeline.
+
+### 7. Groq Large Language Model (LLM)
+
+- Receives the retrieved context from ChromaDB.
+- Generates fast and context-aware responses.
+- Ensures answers are grounded in the trained website content.
+- Reduces hallucinations using the RAG approach.
+
+### 8. MongoDB Atlas Database
+
+- Stores user accounts and authentication details.
+- Maintains trained website information.
+- Saves chatbot sessions, documentation, analytics, and training metadata.
+- Provides secure cloud-based data storage.
+
+### 9. Generated Output
+
+The platform provides:
+
+- AI-powered website chatbot
+- Semantic question answering
+- Website executive summaries
+- AI-generated documentation
+- Website analytics
+- Training reports
+- Chat history
+- Dashboard insights
 
 
 # ⚙ Tech Stack
@@ -348,8 +408,7 @@ The platform:
 
 ## AI
 
-- Google Gemini API
-- Gemini Embeddings
+- Gork LLM
 
 ## Vector Database
 
@@ -366,14 +425,61 @@ The platform:
 # 📂 Project Structure
 
 ```text
-WebMind-AI
-│
-├── client
-├── server
-├── screenshots
-├── README.md
-├── package.json
-└── .env
+d:\WebMind\
+├── backend/
+│   ├── config/
+│   │   └── db.js                  # MongoDB Mongoose connection
+│   ├── controllers/
+│   │   ├── analyticsController.js # Aggregations for user activity charts
+│   │   ├── authController.js      # User registration, login, and profile metrics
+│   │   ├── chatController.js      # Conversations history, chat response, and SSE streaming
+│   │   └── websiteController.js   # Background web training pipeline orchestration
+│   ├── middleware/
+│   │   └── authMiddleware.js      # Express JWT validation middleware
+│   ├── models/
+│   │   ├── Chunk.js               # Embeddings chunk schema
+│   │   ├── Conversation.js        # Chat sessions tracking
+│   │   ├── CrawledPage.js         # Raw HTML-extracted page contents
+│   │   ├── Message.js             # Chat messages with citations array
+│   │   ├── User.js                # Encrypted login profile
+│   │   └── Website.js             # Website status, pages count, and summaries
+│   ├── routes/
+│   │   ├── analyticsRoutes.js
+│   │   ├── authRoutes.js
+│   │   ├── chatRoutes.js
+│   │   └── websiteRoutes.js
+│   ├── services/
+│   │   ├── crawlerService.js      # Recursive cheerio scraper and Puppeteer fallback
+│   │   ├── embeddingService.js    # Gemini API text-embedding-004 vector creator
+│   │   ├── geminiService.js       # Grounded prompt template and generative responses
+│   │   └── vectorStoreService.js  # Dual index orchestrator (ChromaDB + MongoDB similarity fallback)
+│   ├── tests/
+│   │   └── verifyServices.js      # Local validation script for core pipeline
+│   ├── .env                       # Local secrets (PORT, MONGODB_URI, GEMINI_API_KEY, etc.)
+│   ├── package.json
+│   └── server.js                  # Entry point
+└── frontend/
+    ├── src/
+    │   ├── components/            # protected routes, loading widgets, toast messages
+    │   ├── context/
+    │   │   └── AuthContext.jsx    # React state holding login profile/tokens
+    │   ├── layouts/
+    │   │   └── DashboardLayout.jsx# Responsive sidebar navigation framework
+    │   ├── pages/
+    │   │   ├── LandingPage.jsx    # Glowing marketing landing page
+    │   │   ├── Login.jsx / Register.jsx
+    │   │   ├── Dashboard.jsx      # Activity charts and quick access actions
+    │   │   ├── WebsiteTraining.jsx# Real-time console logs during URL crawling
+    │   │   ├── WebsiteManagement.jsx
+    │   │   ├── ChatInterface.jsx  # Grounded chat board with collapsible sources sidebar
+    │   │   └── Analytics.jsx      # Recharts graphs covering requests over time
+    │   ├── services/
+    │   │   └── api.js             # Axios base connector
+    │   ├── App.jsx                # Router endpoints mapping
+    │   └── index.css              # Custom Tailwind v4 styling theme and animations
+    ├── vite.config.js
+    ├── postcss.config.js
+    └── package.json
 ```
 
 # 🚀 Installation
@@ -397,7 +503,7 @@ MONGODB_URI=your_mongodb_connection
 
 JWT_SECRET=your_secret
 
-GEMINI_API_KEY=your_api_key
+GORK_API_KEY=your_api_key
 ```
 
 # ▶ Usage
@@ -420,47 +526,9 @@ GEMINI_API_KEY=your_api_key
 
 9. View Analytics
 
-# 🧠 RAG Pipeline
-
-Website URL
-
-↓
-
-Crawler (Cheerio)
-
-↓
-
-HTML Cleaning
-
-↓
-
-Text Chunking
-
-↓
-
-Gemini Embeddings
-
-↓
-
-ChromaDB Vector Store
-
-↓
-
-Semantic Retrieval
-
-↓
-
-Gemini LLM
-
-↓
-
-AI Response
-
 
 # 📈 Future Enhancements
 
-- PDF Support
-- DOCX Support
 - Sitemap Crawling
 - Image Understanding
 - OCR
@@ -468,12 +536,11 @@ AI Response
 - Voice Chat
 - Team Workspaces
 - API Integration
-- Cloud Deployment
 
 
 # 👩‍💻 Developed By
 
-**Anisa Barvin**
+**ANISABARVIN A**
 
 B.Tech Information Technology
 
