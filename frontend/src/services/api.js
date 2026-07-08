@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Backend base URL
-const API_URL = 'http://localhost:5000/api';
+const API_URL = `${import.meta.env.VITE_API_URL}/api`;
 
 const api = axios.create({
   baseURL: API_URL,
@@ -46,7 +46,7 @@ export const chatAPI = {
   // Returns the streaming URL for EventSource setup in Chat interface
   getStreamUrl: (conversationId, text) => {
     const token = localStorage.getItem('token');
-    return `http://localhost:5000/api/chat/stream?conversationId=${conversationId}&text=${encodeURIComponent(text)}&token=${token}`;
+   return `${API_URL}/chat/stream?conversationId=${conversationId}&text=${encodeURIComponent(text)}&token=${token}`;
   }
 };
 
