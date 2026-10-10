@@ -89,6 +89,7 @@ const WebsiteTraining = () => {
 
   const startPolling = (id) => {
     let checkCount = 0;
+    let indexingLogged = false;
     
     pollIntervalRef.current = setInterval(async () => {
       checkCount++;
@@ -99,8 +100,10 @@ const WebsiteTraining = () => {
         setPagesCrawled(site.totalPages || 0);
         setChunksGenerated(site.totalChunks || 0);
 
+        const stage = site.currentStage || site.status;
+
         // Update progress and logs based on backend status
-        if (site.status === 'crawling') {
+        if (stage === 'crawling') {
           // Crawling progress increases slowly
           const nextProgress = Math.min(45, 5 + checkCount * 5);
           setProgress(nextProgress);
@@ -109,24 +112,33 @@ const WebsiteTraining = () => {
           if (checkCount === 3) addLog(`Cleaning web templates: removing headers, menus, sidebars...`, 'info');
           if (checkCount === 5) addLog(`Crawled page list growing. Visited ${site.totalPages || 0} relative links.`, 'info');
         } 
-        else if (site.status === 'indexing') {
-          // Indexing progress from 50 to 90
-          const nextProgress = Math.min(85, 50 + (checkCount % 10) * 4);
-          setProgress(nextProgress);
+        else if (['indexing', 'embedding', 'saving'].includes(stage)) {
+          // Real progress tracking based on embeddings generated
+          let embedProgress = 0;
+          const totalChunks = site.totalChunks || 1; 
+          const generated = site.embeddingsGenerated || 0;
           
-          if (progress < 50) {
-            addLog(`Crawl completed. Found ${site.totalPages} pages total.`, 'success');
-            addLog(`Splitting extracted page corpuses into 800-character semantic sliding windows...`, 'info');
-            addLog(`Calling Google Gemini Embedding Model (text-embedding-004) to project chunks...`, 'info');
+          if (site.totalChunks && site.totalChunks > 0) {
+            embedProgress = Math.floor((generated / totalChunks) * 35);
           }
-          if (checkCount % 3 === 0) {
-            addLog(`Generated ${site.totalChunks || (site.totalPages * 4)} vectors. Syncing index to ChromaDB...`, 'info');
+          
+          setProgress(50 + embedProgress);
+          setChunksGenerated(generated);
+          
+          if (!indexingLogged) {
+            indexingLogged = true;
+            addLog(`Crawl completed. Found ${site.totalPages} pages total.`, 'success');
+            addLog(`Splitting extracted page corpuses into semantic sliding windows...`, 'info');
+            addLog(`Calling Google Gemini Embedding Model to project chunks...`, 'info');
+          }
+          if (checkCount % 5 === 0 && generated > 0) {
+            addLog(`Generated ${generated} out of ${totalChunks} vectors. Syncing index...`, 'info');
           }
         } 
-        else if (site.status === 'ready') {
+        else if (site.status === 'ready' || stage === 'completed') {
           setProgress(100);
           addLog(`Index synchronization completed successfully!`, 'success');
-          addLog(`Calling Gemini model (gemini-1.5-flash) to extract structural summary details...`, 'info');
+          addLog(`Calling Gemini model to extract structural summary details...`, 'info');
           addLog(`Website Agent trained and ready for user interactions.`, 'success');
           
           clearInterval(pollIntervalRef.current);
@@ -135,7 +147,7 @@ const WebsiteTraining = () => {
           setToastType('success');
           setToastShow(true);
         } 
-        else if (site.status === 'failed') {
+        else if (site.status === 'failed' || stage === 'failed') {
           addLog(`Critical pipeline failure: Crawl or Index operation terminated prematurely.`, 'error');
           clearInterval(pollIntervalRef.current);
           setIsTraining(false);

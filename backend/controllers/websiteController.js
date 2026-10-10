@@ -72,55 +72,64 @@ async function runTrainingPipeline(websiteId, url, name) {
     const allChunks = [];
     const savedPages = [];
 
-    let localPagesProcessed = 0;
+    // Pre-calculate all chunks to report total chunks upfront
+    const allTextChunks = [];
+    for (let page of pages) {
+      const crawledPage = await CrawledPage.create({
+        websiteId,
+        url: page.url,
+        title: page.title,
+        description: page.description,
+        content: page.content,
+        contentLength: page.contentLength
+      });
+      savedPages.push(crawledPage);
+      
+      const textChunks = embeddingService.chunkText(page.content, 800, 150);
+      for (let i = 0; i < textChunks.length; i++) {
+        allTextChunks.push({
+          pageId: crawledPage._id,
+          sourceUrl: page.url,
+          text: textChunks[i],
+          chunkNumber: i + 1
+        });
+      }
+    }
+
+    const totalExpectedChunks = allTextChunks.length;
+    await Website.updateOne({ _id: websiteId }, { $set: { totalChunks: totalExpectedChunks } });
+
+    let localPagesProcessed = pages.length;
     let localEmbeddingsGenerated = 0;
 
     try {
-      for (let page of pages) {
-        // Save CrawledPage to MongoDB
-        const crawledPage = await CrawledPage.create({
+      for (let i = 0; i < allTextChunks.length; i++) {
+        const chunkData = allTextChunks[i];
+        
+        // Generate embedding vector
+        const result = await embeddingService.getEmbedding(chunkData.text);
+        if (!result || !result.success) {
+           await website.addLog(`Embedding failed for a chunk: ${result ? result.error : 'Unknown'}. Skipping chunk.`, 'warn');
+           continue;
+        }
+        
+        localEmbeddingsGenerated += 1;
+        
+        allChunks.push({
           websiteId,
-          url: page.url,
-          title: page.title,
-          description: page.description,
-          content: page.content,
-          contentLength: page.contentLength
+          pageId: chunkData.pageId,
+          text: chunkData.text,
+          sourceUrl: chunkData.sourceUrl,
+          chunkNumber: chunkData.chunkNumber,
+          embedding: result.values
         });
-        savedPages.push(crawledPage);
         
-        localPagesProcessed += 1;
-        
-        // Create chunks
-        const textChunks = embeddingService.chunkText(page.content, 800, 150);
-        
-        for (let i = 0; i < textChunks.length; i++) {
-          const text = textChunks[i];
-          
-          // Generate embedding vector
-          const result = await embeddingService.getEmbedding(text);
-          if (!result || !result.success) {
-             await website.addLog(`Embedding failed for a chunk: ${result ? result.error : 'Unknown'}. Skipping chunk.`, 'warn');
-             continue;
-          }
-          const embedding = result.values;
-          localEmbeddingsGenerated += 1;
-          
-          allChunks.push({
-            websiteId,
-            pageId: crawledPage._id,
-            text,
-            sourceUrl: page.url,
-            chunkNumber: i + 1,
-            embedding
-          });
-          
-          // Save progress periodically using atomic update
-          if (allChunks.length % 10 === 0) {
-            await Website.updateOne(
-              { _id: websiteId },
-              { $set: { pagesProcessed: localPagesProcessed, embeddingsGenerated: localEmbeddingsGenerated } }
-            );
-          }
+        // Save progress periodically using atomic update
+        if (localEmbeddingsGenerated % 10 === 0) {
+          await Website.updateOne(
+            { _id: websiteId },
+            { $set: { embeddingsGenerated: localEmbeddingsGenerated } }
+          );
         }
       }
       

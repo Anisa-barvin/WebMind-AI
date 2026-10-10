@@ -11,11 +11,11 @@ const getApiKey = () => {
 };
 
 const getModel = () => {
-  return process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+  return process.env.GROQ_MODEL || 'openai/gpt-oss-20b';
 };
 
 console.log('Groq initialized');
-console.log(`  Model: ${process.env.GROQ_MODEL || 'llama-3.3-70b-versatile'}`);
+console.log(`  Model: ${process.env.GROQ_MODEL || 'openai/gpt-oss-20b'}`);
 
 /**
  * Generate a structured summary of the crawled website contents
