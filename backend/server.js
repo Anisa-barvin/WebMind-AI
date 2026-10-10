@@ -29,18 +29,24 @@ connectDB();
 const app = express();
 
 // Middlewares
-const allowedOrigins = process.env.FRONTEND_URL
-  ? [process.env.FRONTEND_URL, 'http://localhost:5173', 'http://localhost:3000']
-  : ['http://localhost:5173', 'http://localhost:3000'];
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://web-mind-si-2k65.vercel.app', // production Vercel URL
+  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : [])
+];
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, Postman)
+    // Allow requests with no origin (Postman, curl, mobile)
     if (!origin) return callback(null, true);
+    // Allow any vercel.app subdomain
+    if (origin.endsWith('.vercel.app')) return callback(null, true);
+    // Allow explicitly listed origins
     if (allowedOrigins.includes(origin)) return callback(null, true);
     callback(new Error(`CORS: Origin ${origin} not allowed`));
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
