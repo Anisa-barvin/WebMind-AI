@@ -50,6 +50,10 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
+
+// Handle OPTIONS preflight for all routes explicitly
+app.options('*', cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
